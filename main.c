@@ -3,7 +3,6 @@
 #include <time.h>
 #include <float.h>
 #include <omp.h>
-#include <sys/time.h>
 
 int main(int argc, char* argv[]) {
     long long int num_throws, num_hits;
@@ -17,8 +16,9 @@ int main(int argc, char* argv[]) {
     int seed;
     double x, y;
 
-    struct timeval start, end;
-    gettimeofday(&start, NULL);
+    double start, end;
+    start = omp_get_wtime();
+
 #   pragma omp parallel num_threads(thread_count) reduction (+:num_hits) private (seed) private(x) private (y)
     {
         seed = time(NULL)^omp_get_thread_num();
@@ -29,9 +29,10 @@ int main(int argc, char* argv[]) {
             if (x * x + y * y <= 1) num_hits += 1;
         }
     }
-    gettimeofday(&end, NULL);
-    printf("%ld\n", ((end.tv_sec - start.tv_sec)*1000000L
-                     +end.tv_usec) - start.tv_usec);
+    
+    end = omp_get_wtime();
+    printf("elapsed time: %f seconds\n", end - start);
+
     estimate = 4*num_hits/(double)num_throws;
     printf("estimate: %.*f\n", DBL_DECIMAL_DIG, estimate);
 
