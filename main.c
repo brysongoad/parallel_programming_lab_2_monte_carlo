@@ -2,7 +2,7 @@
  * 4/7/2018
  * Parallel Programming lab 2 - Monte Carlo
  * Estimates pi using the Monte Carlo method parallelized with OpenMP
- * Program Arguments: <
+ * Program Arguments: <iteration_count> <thread_count>
  */
 #include <stdio.h>
 #include <stdlib.h>
